@@ -25,7 +25,8 @@
                     response.forEach(user => {
                         buildUserTable(user);
                     })
-                });
+                })
+                .catch(error => console.log('error', error));
             }// end getUsers()
             
             /***************************************************************
@@ -41,7 +42,8 @@
                     response.forEach(post => {
                         buildPostDisplay(post);
                     })
-                });
+                })
+                .catch(error => console.log('error', error));
             }// end getUserPost()
 
             function deleteUserPosts(){
