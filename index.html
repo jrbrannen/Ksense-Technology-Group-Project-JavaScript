@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Ksense Tech Group Project</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatable" content="IE=edge">
+        <meta name="viewport" content="width=device-width, intial-scale=1.0">
+        <title>Ksense Tech Group Project</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <!--Jeremy Brannen-->
+        <script>
+            /***************************************************************
+             * Function call to dynamically build a list of users from API
+             * in a table
+             * ************************************************************/
+            function getUsers(){
+                fetch('https://jsonplaceholder.typicode.com/users')
+                .then(response => {
+                    return response.json();
+                })
+                .then(response => {
+                    response.forEach(user => {
+                        buildUserTable(user);
+                    })
+                });
+            }// end getUsers()
+            
+            /***************************************************************
+             * Dynamically builds a users posts when name is clicked on.
+             * Uses the user's Id as a parameter
+             * ************************************************************/
+            function getUserPost(inID){
+                fetch('https://jsonplaceholder.typicode.com/users/' + inID + '/posts')
+                .then(response => {
+                    return response.json();
+                })
+                .then(response => {
+                    response.forEach(post => {
+                        buildPostDisplay(post);
+                    })
+                });
+            }// end getUserPost()
+
+            function deleteUserPosts(){
+                let element = document.querySelector(".userPosts");
+                if(typeof(element) != "undefined" && element != null){
+                    element.remove();
+                }
+                
+                // recreate the div element
+                let divObj = document.createElement("div");
+                divObj.setAttribute("class", "userPosts col-10 mx-auto");
+                document.querySelector(".baseDiv").appendChild(divObj);
+            }// end of deleteUserPost()
+
+            /************************************************************
+             * Function dynamically builds each table row and table data
+             * for each user
+             ********************************************************** */
+            function buildUserTable(inUser){
+                // build elements
+                let tableRowObj = document.createElement("tr");
+                let tableCellObj = document.createElement("td");
+                let nameSpanObj = document.createElement("span");
+
+                // add span element text and attribute
+                nameSpanObj.innerHTML = inUser.name;
+
+                // add a post deletion listener
+                nameSpanObj.addEventListener("click", function(){
+                    deleteUserPosts();
+                })
+
+                // add a post builder listener
+                nameSpanObj.addEventListener("click", function(){
+                    getUserPost(inUser.id);
+                })
+
+                // append element objects
+                tableCellObj.appendChild(nameSpanObj);
+                tableRowObj.setAttribute("scope", "row");
+                tableRowObj.appendChild(tableCellObj);
+
+                // append to DOM
+                document.querySelector(".tableBody").appendChild(tableRowObj);
+            }// end buildUserTable()
+
+            /************************************************************
+             * Function dynamically builds each post from a user
+             ********************************************************** */
+            function buildPostDisplay(inPost){
+                // build elements
+                let postTitleH3Obj = document.createElement("h3");
+                let postBodyPObj = document.createElement("p");
+
+                // add title object text
+                postTitleH3Obj.innerHTML = inPost.title;
+
+                // add body object text
+                postBodyPObj.innerHTML = inPost.body;
+
+                // append objects to DOM
+                document.querySelector(".userPosts").appendChild(postTitleH3Obj);
+                document.querySelector(".userPosts").appendChild(postBodyPObj);
+            }// end buildPostDisplay()
+
+            /***************************************************************
+             * Page loading function
+             * *************************************************************/
+            function pageLoad(){
+                getUsers();
+            }// end pageLoad()
+        </script>
+        <style>
+            
+        </style>
+    </head>
+
+    <body onload= pageLoad(); class="body">
+        <h1 class="text-center text-primary">Users Table</h1>
+        <h4 class="text-center">Click users name to load their post</h4>
+        
+        <table class="table table-striped table-bordered col-6 mx-auto">
+            <thead>
+                <tr>
+                    <th scope="col">User Name</th> 
+                </tr> 
+            </thead>
+            <tbody class="tableBody">
+            </tbody>
+        </table>
+
+        <div class="baseDiv">
+        </div>
+        
+    </body>
+
+</html>
